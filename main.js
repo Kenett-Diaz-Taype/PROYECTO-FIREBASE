@@ -221,6 +221,23 @@ facebookButton.addEventListener("click", (e) =>{
 
 // });
 
+
+const twitterButton = document.querySelector('#twitterLogin');
+twitterButton.addEventListener('click', (e) =>{
+  loginForm.reset();
+
+  $("#logeandoUsuario").modal("hide");
+  $('.modal-backdrop').remove();
+
+    Swal.fire({
+        icon: "info",
+        title: "IMPORTANTE!!!...",
+        text: "El uso de este recurso está en desarrollo...",
+        showConfirmButton: true,
+        timer: 4500,
+      });
+})
+
 //PUBLICACIONES POSTS
 
 const postList = document.querySelector('.posts');
@@ -229,17 +246,57 @@ const setUpPosts = data => {
     if (data.length ) {
         let html = '';
         data.forEach(doc => {
+
             const posts = doc.data();
 
-            const li = `<li class="list-group-item list-group-item-action " >
-                <h5>${posts.titulo}</h5>
-                <p>${posts.descripcion}</p>
+            let color= ""; 
+
+            for(let i=0; i <= 6; i ++){
+              let a = Math.round(Math.random()*7);
+              
+              switch(a){
+                case 0:
+                  color="primary";
+                  break;
+                case 1:
+                  color="secondary";
+                  break;
+                case 2:
+                  color="success";
+                  break;
+                case 3:
+                  color="danger";
+                  break;
+                case 4: 
+                  color="warning";
+                  break;
+                case 5:
+                  color="info";
+                  break;
+                case 6:
+                  color="dark";
+                  break;
+          
+              }
+
+            }
+
+
+            const li = `<li class="list-group-item list-group-item-action border-${color} text-${color} " >
+                <div class="card-header border-${color} text-${color}">
+                  <h5 card-title>${posts.titulo}</h5>
+                </div>
+                  <div class="card-body">
+                    <p card-text>${posts.descripcion}</p>
+                    
+                  </div>
+                
             </li>`;
             html += li;
         });
         postList.innerHTML = html;
     }else{
-        postList.innerHTML = '<p class="text-center">Logueate para ver las publicaciones</p>'
+        postList.innerHTML = '<p class="text-center">Logueate para ver las publicaciones y poder publicar...</p>'
     }
 }
 
