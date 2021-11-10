@@ -193,6 +193,34 @@ facebookButton.addEventListener("click", (e) =>{
     })
 });
 
+
+//LOGIN TWITTER
+
+// const twitterButton = document.querySelector('#twitterLogin');
+// twitterButton.addEventListener('click', (e) =>{
+//   e.preventDefault();
+//   console.log("logueando con twitter");
+//   const provider = new firebase.auth.TwitterAuthProvider();
+//   auth.signInWithPopup(provider).then(result =>{
+//     console.log(result);
+//     loginForm.reset();
+
+//     $("#logeandoUsuario").modal("hide");
+//     $('.modal-backdrop').remove();
+    
+//     Swal.fire({
+//       icon: "success",
+//       title: "Excelente!!!...",
+//       text: "Usuario Twitter logueado!...",
+//     });
+
+//     console.log('twitter logueado');
+//   }).catch(err =>{
+
+//   });
+
+// });
+
 //PUBLICACIONES POSTS
 
 const postList = document.querySelector('.posts');
