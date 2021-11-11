@@ -7,6 +7,12 @@ const ocultandoPost = document.querySelectorAll('.ocultarPost');
 let editStatus =false;
 let id =  '';
 
+const menuBar = document.getElementById('menuBar').getAttribute('aria-expanded');
+
+
+
+
+console.log(menuBar);
 
 
 
