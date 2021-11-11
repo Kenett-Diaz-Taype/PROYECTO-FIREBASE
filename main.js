@@ -3,6 +3,11 @@ const loggedOutLinks = document.querySelectorAll('.logged-out');
 const loggedInLinks = document.querySelectorAll('.logged-in');
 const formPublicacion = document.querySelectorAll('.formPublicacion');
 const postS = document.querySelector('.postss');
+const ocultandoPost = document.querySelectorAll('.ocultarPost');
+let editStatus =false;
+let id =  '';
+
+
 
 
 const loginCheck = user =>{
@@ -19,7 +24,9 @@ const loginCheck = user =>{
         });
         postS.style.display= 'block';
 
-
+        ocultandoPost.forEach(link =>{
+          link.style.display = 'block';
+        })
    
     }else{
         loggedInLinks.forEach(link =>{
@@ -34,7 +41,9 @@ const loginCheck = user =>{
         });
         postS.style.display= 'none';
        
-    
+        ocultandoPost.forEach(link =>{
+          link.style.display = 'none';
+        })
 
     }
 }
@@ -306,7 +315,7 @@ const setUpPosts = data => {
         });
         postList.innerHTML = html;
     }else{
-        postList.innerHTML = '<p class="text-center">Logueate para ver las publicaciones y poder publicar...</p>'
+        postList.innerHTML = '<p class="text-center">Logueate para poder publicar Eliminar o Editar...</p>'
     }
 }
 
@@ -323,13 +332,21 @@ const postContainer= document.querySelector('#posts-container');
 const getPosts = ()=> fs.collection('posts').get();
 const onGetPost = (callback) => fs.collection('posts').onSnapshot(callback);
 
+const deletePosts = id => fs.collection('posts').doc(id).delete();
+
+const getPost = (id) => fs.collection('posts').doc(id).get();
+
+const updatePost =(id, updatedPost) => fs.collection('posts').doc(id).update(updatedPost);
+
+
 window.addEventListener('DOMContentLoaded', async (e) =>{
   onGetPost((querySnapshot)=>{
     postContainer.innerHTML ='';
     querySnapshot.forEach(doc =>{
 
-      console.log(doc.data());
-  
+      const posts = doc.data();
+      posts.id = doc.id;
+      
       let color= ""; 
   
               for(let i=0; i <= 6; i ++){
@@ -376,20 +393,47 @@ window.addEventListener('DOMContentLoaded', async (e) =>{
           ${doc.data().descripcion}
         </div>
         <div>
-          <button class="btn btn-info " id="btn-edit">EDITAR</button>
-          <button class="btn btn-danger " id="btn-delete">ELIMINAR</button>
+          <button class="btn btn-info btn-edit" data-id="${posts.id}">EDITAR</button>
+          <button class="btn btn-danger btn-delete"  data-id="${posts.id}">ELIMINAR</button>
         </div>
         
       </div>`
           
-        const btnEliminar = document.querySelectorAll('#btn-delete');
-        const btnEditar = document.querySelectorAll('#btn-edit');
+        const btnEliminar = document.querySelectorAll('.btn-delete');
+        const btnEditar = document.querySelectorAll('.btn-edit');
+    
         
         btnEliminar.forEach(btn =>{
-          btn.addEventListener('click', (e)=>{
+          btn.addEventListener('click', async (e)=>{
+            // console.log(e.target.dataset.id);
+            const post = await getPost(e.target.dataset.id);
+
+            await deletePosts(e.target.dataset.id);
+            Swal.fire({
+              icon: "success",
+              title: "OPERACION EXITOSA!!!...",
+              text: `Ah Eliminado a ${post.data().titulo} 😊...`,
+              showConfirmButton: true,
+              timer: 4500,
+            });
+          });
+        });
+
+
+
+        btnEditar.forEach(btn =>{
+          btn.addEventListener('click', async (e)=>{
+              const post = await getPost(e.target.dataset.id);
+             
+
+              editStatus=true;
+              id= post.id;
             
+              taskForm['task-title'].value = post.data().titulo;
+              taskForm['task-description'].value = post.data().descripcion;
+              taskForm['btn-task-form'].innerText= 'Actualizar';
           })
-        })
+        });
   
     });
   });
@@ -402,15 +446,36 @@ window.addEventListener('DOMContentLoaded', async (e) =>{
 taskForm.addEventListener('submit', async (e)=>{
   e.preventDefault();
 
-  const title = taskForm['task-title'].value;
-  const description = taskForm['task-description'].value;
+  const title = taskForm['task-title'];
+  const description = taskForm['task-description'];
 
- await saveTask(title, description);
+ if(!editStatus){
+  await saveTask(title.value, description.value);
+ }else{
+   await updatePost(id,{
+     titulo: title.value,
+     descripcion: description.value,
+   });
 
+   editStatus = false;
+   id='';
+   taskForm['btn-task-form'].innerText= 'Publicar';
+   Swal.fire({
+    icon: "success",
+    title: "EXCELENTE!!!...",
+    text: "Ha actualizado exitosamente...🤪",
+    showConfirmButton: true,
+    timer: 4500,
+  });
+  console.log('se actualizo 😊');
+ }
+
+  await getPosts();
   taskForm.reset();
   console.log('task-form');
 
-  await getPosts();
+ 
+  
 
 })
 
