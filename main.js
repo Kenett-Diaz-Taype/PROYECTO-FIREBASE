@@ -1,6 +1,9 @@
 //LOGIN CHECKING
 const loggedOutLinks = document.querySelectorAll('.logged-out');
 const loggedInLinks = document.querySelectorAll('.logged-in');
+const formPublicacion = document.querySelectorAll('.formPublicacion');
+const postS = document.querySelector('.postss');
+
 
 const loginCheck = user =>{
     if (user){
@@ -10,6 +13,14 @@ const loginCheck = user =>{
         loggedOutLinks.forEach(link =>{
             link.style.display = 'none';
         });
+        formPublicacion.forEach(link => {
+          link.style.display = 'block';
+          console.log('form visible');
+        });
+        postS.style.display= 'block';
+
+
+   
     }else{
         loggedInLinks.forEach(link =>{
             link.style.display = 'none';
@@ -17,6 +28,14 @@ const loginCheck = user =>{
         loggedOutLinks.forEach(link =>{
             link.style.display = 'block';
         });
+        formPublicacion.forEach(link => {
+          link.style.display = 'none';
+          console.log('form no visible');
+        });
+        postS.style.display= 'none';
+       
+    
+
     }
 }
 
@@ -282,16 +301,7 @@ const setUpPosts = data => {
             }
 
 
-            const li = `<li class="list-group-item list-group-item-action border-${color} text-${color} " >
-                <div class="card-header border-${color} text-${color}">
-                  <h5 card-title>${posts.titulo}</h5>
-                </div>
-                  <div class="card-body">
-                    <p card-text>${posts.descripcion}</p>
-                    
-                  </div>
-                
-            </li>`;
+            const li = ``;
             html += li;
         });
         postList.innerHTML = html;
@@ -299,6 +309,113 @@ const setUpPosts = data => {
         postList.innerHTML = '<p class="text-center">Logueate para ver las publicaciones y poder publicar...</p>'
     }
 }
+
+//FORM POSTEOS ...
+const taskForm = document.querySelector('#task-form');
+const postContainer= document.querySelector('#posts-container');
+
+ const saveTask = (title, description)=>
+  fs.collection('posts').doc().set({
+  titulo: title,
+  descripcion: description
+});
+
+const getPosts = ()=> fs.collection('posts').get();
+const onGetPost = (callback) => fs.collection('posts').onSnapshot(callback);
+
+window.addEventListener('DOMContentLoaded', async (e) =>{
+  onGetPost((querySnapshot)=>{
+    postContainer.innerHTML ='';
+    querySnapshot.forEach(doc =>{
+
+      console.log(doc.data());
+  
+      let color= ""; 
+  
+              for(let i=0; i <= 6; i ++){
+                let a = Math.round(Math.random()*7);
+                
+                switch(a){
+                  case 0:
+                    color="primary";
+                    break;
+                  case 1:
+                    color="secondary";
+                    break;
+                  case 2:
+                    color="success";
+                    break;
+                  case 3:
+                    color="danger";
+                    break;
+                  case 4: 
+                    color="warning";
+                    break;
+                  case 5:
+                    color="info";
+                    break;
+                  case 6:
+                    color="dark";
+                    break;
+            
+                }
+  
+              }
+  
+  
+      postContainer.innerHTML += `<div class="card card-body mt-4 border-${color} " id="carId" >
+            <div class="card-header border-${color} text-${color}">
+            <h5 class="card-title">
+              ${doc.data().titulo}
+            </h5>  
+            
+            </div>
+            
+        <div class="card-body  text-${color}">
+  
+          ${doc.data().descripcion}
+        </div>
+        <div>
+          <button class="btn btn-info " id="btn-edit">EDITAR</button>
+          <button class="btn btn-danger " id="btn-delete">ELIMINAR</button>
+        </div>
+        
+      </div>`
+          
+        const btnEliminar = document.querySelectorAll('#btn-delete');
+        const btnEditar = document.querySelectorAll('#btn-edit');
+        
+        btnEliminar.forEach(btn =>{
+          btn.addEventListener('click', (e)=>{
+            
+          })
+        })
+  
+    });
+  });
+
+  
+
+});
+
+
+taskForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+
+  const title = taskForm['task-title'].value;
+  const description = taskForm['task-description'].value;
+
+ await saveTask(title, description);
+
+  taskForm.reset();
+  console.log('task-form');
+
+  await getPosts();
+
+})
+
+
+
 
 //EVENTOS
 //LISTAR POR USUAIRO AUTENTICADOS

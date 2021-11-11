@@ -105,25 +105,36 @@
     <div class="container p-4">
       <div class="row">
         <div class="col-md-6 offset-md-3">
-          
-          <form action="#">
-            <div class="form-group">
-              <input type="text" placeholder="Ingresa el Titulo:" class="form-control" required>
+          <div class="card">
+            <div class="card-body">
+              <form  class="formPublicacion"  style=" display:none;" id="task-form">
+            <div class="form-group ">
+              <input type="text" id="task-title" placeholder="Ingresa el Titulo:" class="form-control"autofocus required >
             </div>
             <div class="form-group">
               
-              <textarea class="form-control " id="exampleFormControlTextarea1" rows="4" placeholder="Ingresa la descripcion:" required></textarea>
+              <textarea class="form-control " id="task-description" rows="4" placeholder="Ingresa la descripcion:" required></textarea>
             </div>
-            <button class="btn btn-outline-success align-self-end">PUBLICAR</button>
+            <button type="submit" class="btn btn-outline-success align-self-end" id="btn-task-form">PUBLICAR</button>
           </form>
 
-
-          <h5 class="m-2">POSTS</h5>
+           <h5 class="m-2 postss" style="display:none;">POSTS</h5>
 
           <ul class="list-group posts" >
             
             
           </ul>
+
+          <div class="" id="posts-container" >
+
+          </div>
+
+            </div>
+          </div>
+          
+
+
+         
           
         </div>
       </div>
